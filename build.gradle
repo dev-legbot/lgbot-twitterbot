@@ -1,0 +1,16 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'com.google.cloud.dataflow', name: 'google-cloud-dataflow-java-sdk-all', version: '2.2.0'
+
+    testCompile 'junit:junit:4.12'
+}
+
+mainClassName = 'App'
