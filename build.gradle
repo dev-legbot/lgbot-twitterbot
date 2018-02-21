@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.google.cloud.dataflow', name: 'google-cloud-dataflow-java-sdk-all', version: '2.2.0'
+   	compile group: 'com.google.cloud.dataflow', name: 'google-cloud-dataflow-java-sdk-all', version: '2.2.0'
 
 	compile group:'org.twitter4j', name:'twitter4j-core', version:'4.0.4'
     compile group:'org.twitter4j', name:'twitter4j-async', version:'4.0.4'
@@ -21,7 +21,7 @@ dependencies {
 run{
 	// For set application commandline argsments.
     // To set argments, run gradle command like below.
-    //    gradle run --Pmainargs="--customOption=foobar"
+    // gradle run --Pmainargs="--customOption=foobar"
     if (project.hasProperty('mainargs')) {
         args(mainargs.split('\\s+'))
     }
