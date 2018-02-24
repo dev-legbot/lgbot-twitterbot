@@ -12,7 +12,7 @@ import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
 
 /**
- * サイトタイプがoldであるサイトのURLをTwitterに投稿する。
+ * 連携されたURLをTwitterに投稿する。
  * @author kazuki
  *
  */
@@ -51,12 +51,12 @@ public class TwitterPostDoFn extends DoFn<PubsubMessage, String> {
 		this.accessTokenSecret = oauth[3];
 	}
 
-	@ProcessElement
-	public void post(ProcessContext c) {
-
-		Logger LOGGER = Logger.getLogger(TwitterPostDoFn.class.getName());
-
-		// Twitter認証情報を初期化する。
+	/**
+	 * TwitterBot認証情報の初期化を行う。
+	 * @return tf
+	 * 		初期化したTwitterFactoryインスタンス
+	 */
+	private TwitterFactory initOauth() {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 
 		String consumerkey = null;
@@ -69,9 +69,17 @@ public class TwitterPostDoFn extends DoFn<PubsubMessage, String> {
 		cb.setOAuthAccessToken(accessToken);
 		cb.setOAuthAccessTokenSecret(accessTokenSecret);
 
-
 		TwitterFactory tf = new TwitterFactory(cb.build());
-		Twitter lgbot = tf.getInstance();
+
+		return tf;
+	}
+
+	@ProcessElement
+	public void post(ProcessContext c) {
+
+		Logger LOGGER = Logger.getLogger(TwitterPostDoFn.class.getName());
+
+		Twitter lgbot = initOauth().getInstance();
 
 		lgbot.setOAuthConsumer(this.consumerkey, this.consumerSecret);
 		lgbot.setOAuthAccessToken(new AccessToken(this.accessToken, this.accessTokenSecret));
@@ -80,7 +88,7 @@ public class TwitterPostDoFn extends DoFn<PubsubMessage, String> {
 			lgbot.updateStatus(new String(c.element().getPayload()));
 			LOGGER.info(String.format("Publish Message : %s", new String(c.element().getPayload())));
 		} catch (TwitterException e) {
-			e.printStackTrace();
+			LOGGER.warning(e.getErrorMessage());
 		}
 	}
 

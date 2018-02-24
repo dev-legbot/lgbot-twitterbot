@@ -11,7 +11,6 @@ import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.ParDo;
 
-import doFn.ConvertDoFn;
 import doFn.FilterDoFn;
 import doFn.TwitterPostDoFn;
 
@@ -64,7 +63,7 @@ public class Main {
 		p.apply(PubsubIO.readMessagesWithAttributes()
 				.fromSubscription(option.getSubscription()))
 
-				.apply("Convert to Some Object", ParDo.of(new ConvertDoFn()))
+//				.apply("Convert to Some Object", ParDo.of(new ConvertDoFn()))
 				.apply("Filtering only old site", ParDo.of(new FilterDoFn()))
 				.apply("Post message to Twitter", ParDo.of(new TwitterPostDoFn(getOauth(option))));
 
