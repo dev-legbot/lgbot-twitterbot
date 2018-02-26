@@ -5,10 +5,10 @@ import java.util.logging.Logger;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubMessage;
 import org.apache.beam.sdk.transforms.DoFn;
 
+import constants.MyOption;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
 
 /**
@@ -23,69 +23,43 @@ public class TwitterPostDoFn extends DoFn<PubsubMessage, String> {
 	private String accessToken;
 	private String accessTokenSecret;
 
-	public String getConsumerkey() {
-		return consumerkey;
-	}
-
-	public String getConsumerSecret() {
-		return consumerSecret;
-	}
-
-	public String getAccessToken() {
-		return accessToken;
-	}
-
-	public String getAccessTokenSecret() {
-		return accessTokenSecret;
-	}
-
 	/**
 	 * コンストラクタ
-	 * @param oauth
-	 * 		コマンドライン引数で渡したTwitter認証情報の配列
+	 * @param option
+	 * 		コマンドライン引数で渡したTwitter認証情報
 	 */
-	public TwitterPostDoFn(String[] oauth) {
-		this.consumerkey = oauth[0];
-		this.consumerSecret = oauth[1];
-		this.accessToken = oauth[2];
-		this.accessTokenSecret = oauth[3];
+	public TwitterPostDoFn(MyOption option) {
+		this.consumerkey = option.getConsumerKey();
+		this.consumerSecret = option.getConsumerSecret();
+		this.accessToken = option.getAccessToken();
+		this.accessTokenSecret = option.getAccessTokenSecret();
 	}
 
 	/**
-	 * TwitterBot認証情報の初期化を行う。
-	 * @return tf
-	 * 		初期化したTwitterFactoryインスタンス
+	 * TwitterBot認証情報をセットする。
+	 * @return
+	 * 		認証情報をセットしたTwitterインスタンス
 	 */
-	private TwitterFactory initOauth() {
+	private Twitter initOauth() {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 
-		String consumerkey = null;
-		String consumerSecret = null;
-		String accessToken = null;
-		String accessTokenSecret = null;
-
-		cb.setOAuthConsumerKey(consumerkey);
-		cb.setOAuthConsumerSecret(consumerSecret);
-		cb.setOAuthAccessToken(accessToken);
-		cb.setOAuthAccessTokenSecret(accessTokenSecret);
+		cb.setOAuthConsumerKey(this.consumerkey).setOAuthConsumerSecret(this.consumerSecret)
+				.setOAuthAccessToken(this.accessToken).setOAuthAccessTokenSecret(this.accessTokenSecret);
 
 		TwitterFactory tf = new TwitterFactory(cb.build());
 
-		return tf;
+		return tf.getInstance();
 	}
 
 	@ProcessElement
 	public void post(ProcessContext c) {
 
-		Logger LOGGER = Logger.getLogger(TwitterPostDoFn.class.getName());
+		Logger LOGGER = Logger.getLogger(TwitterPostDoFnTest.class.getName());
 
-		Twitter lgbot = initOauth().getInstance();
-
-		lgbot.setOAuthConsumer(this.consumerkey, this.consumerSecret);
-		lgbot.setOAuthAccessToken(new AccessToken(this.accessToken, this.accessTokenSecret));
+		Twitter twitterBotAccount = initOauth();
 
 		try {
-			lgbot.updateStatus(new String(c.element().getPayload()));
+			twitterBotAccount.updateStatus(new String(c.element().getPayload()));
 			LOGGER.info(String.format("Publish Message : %s", new String(c.element().getPayload())));
 		} catch (TwitterException e) {
 			LOGGER.warning(e.getErrorMessage());

@@ -21,7 +21,7 @@ public class FilterDoFn extends DoFn<PubsubMessage, PubsubMessage> {
 		LOGGER.info(String.format("Receive Message : %s", new String(c.element().getPayload())));
 		LOGGER.info(String.format("Receive Attribute : %s", c.element().getAttribute("siteType")));
 
-		if (c.element().getAttribute("siteType").equals(SiteType.old.toString())) {
+		if(SiteType.judgeSiteType(c.element().getAttribute("siteType"))) {
 			c.output(c.element());
 		}
 	}
