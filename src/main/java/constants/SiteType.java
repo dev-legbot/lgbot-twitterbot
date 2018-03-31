@@ -1,7 +1,7 @@
 package constants;
 
 public enum SiteType {
-	old("old"), modern("modern");
+	OLD("old"), MODERN("modern");
 
 	private final String label;
 
@@ -14,8 +14,8 @@ public enum SiteType {
 		return this.label;
 	}
 
-	public static boolean judgeSiteType(String siteTypeOfPubSubMesagesURL) {
-		if (old.toString().equals(siteTypeOfPubSubMesagesURL)) {
+	public static boolean isOld(String siteType) {
+		if (OLD.toString().equals(siteType)) {
 			return true;
 		}
 		return false;
