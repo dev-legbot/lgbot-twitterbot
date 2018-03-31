@@ -6,12 +6,12 @@ import org.apache.beam.sdk.transforms.ParDo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import client.Client;
+import client.TwitterPostClient;
 import constants.MyOption;
 import dofn.ConvertDoFn;
 import dofn.FilterDoFn;
 import dofn.TwitterPostDoFn;
-import model.Lgbot;
-import twitter4j.Twitter;
 
 public class Main {
 
@@ -26,7 +26,8 @@ public class Main {
 
 		LOGGER.info(String.format("Runtime Settings : %s", runtimeOption.toString()));
 
-		Twitter lgbot = Lgbot.getInstance(runtimeOption);
+		Client twitter = new TwitterPostClient();
+		twitter.init(runtimeOption);
 
 		Pipeline p = Pipeline.create(runtimeOption);
 
@@ -34,7 +35,7 @@ public class Main {
 				.fromSubscription(runtimeOption.getSubscription()))
 				.apply("Convert to SiteUrlManager", ParDo.of(new ConvertDoFn()))
 				.apply("Filtering only old site", ParDo.of(new FilterDoFn()))
-				.apply("Post message to Twitter", ParDo.of(new TwitterPostDoFn(lgbot)));
+				.apply("Post message to Twitter", ParDo.of(new TwitterPostDoFn(twitter)));
 
 		p.run();
 	}

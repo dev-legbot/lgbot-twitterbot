@@ -1,42 +1,44 @@
 package dofn;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.junit.Assert.*;
 
 import org.apache.beam.sdk.transforms.DoFnTester;
-import org.junit.Test;
-import org.w3c.dom.DocumentFragment;
+import org.junit.jupiter.api.Test;
 
+import client.Client;
+import constants.MyOption;
 import constants.SiteType;
-import model.Lgbot;
 import model.SiteUrlManager;
-import twitter4j.Twitter;
-import twitter4j.TwitterAdapter;
 
 class TwitterPostDoFnTest {
-	private static class MockClient extends Lgbot{
 
-		private String want;
+	private static class MockClient implements Client{
 
-		public MockClient(String msg) {
-			this.want = msg;
+		private String expected;
+
+		public MockClient(String url) {
+			this.expected = url;
 		}
 
 		@Override
-		public  void postToTwitter(Twitter lgbot, String message) {
-			assertThat(message, is(want));
+		public void post(String actual) {
+			assertThat(expected, is(actual));
+		}
+
+		// TODO init処理は今回のテスト観点では必要ないため実装無しでオーバーライド
+		@Override
+		public void init(MyOption option) {
 		}
 	}
 
 	@Test
-	public void post() throws Exception{
+	public void testPost() throws Exception{
 		String url = "http://old.com";
 		MockClient client = new MockClient(url);
 
-		try(DoFnTester<SiteUrlManager, String> tester = DoFnTester.of(new TwitterPostDoFn(client)){
+		try(DoFnTester<SiteUrlManager, String> tester = DoFnTester.of(new TwitterPostDoFn(client))){
 			tester.processBundle(new SiteUrlManager(url, SiteType.OLD.toString()));
 		}
 	}
-
-
 }

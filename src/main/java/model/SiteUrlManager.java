@@ -10,6 +10,9 @@ public class SiteUrlManager {
 	private String url;
 	private String siteType;
 
+	public SiteUrlManager() {
+		super();
+	}
 
 	public SiteUrlManager(String url, String siteType) {
 		this.url = url;

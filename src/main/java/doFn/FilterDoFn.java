@@ -22,7 +22,7 @@ public class FilterDoFn extends DoFn<SiteUrlManager, SiteUrlManager> {
 		LOGGER.info(String.format("Receive Message : %s", new String(c.element().getUrl())));
 		LOGGER.info(String.format("Receive Attribute : %s", c.element().getSiteType()));
 
-		if(SiteType.isOld(c.element().getUrl())) {
+		if(SiteType.isOld(c.element().getSiteType())) {
 			c.output(c.element());
 		}
 	}
