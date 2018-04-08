@@ -45,3 +45,10 @@ gradle-app.setting
 
 .idea/
 *.iml
+
+# eclipse
+.settings
+.classpath
+
+# binary code
+bin/
