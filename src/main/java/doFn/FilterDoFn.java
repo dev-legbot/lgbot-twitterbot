@@ -1,27 +1,29 @@
-package doFn;
+package dofn;
 
-import java.util.logging.Logger;
 
-import org.apache.beam.sdk.io.gcp.pubsub.PubsubMessage;
 import org.apache.beam.sdk.transforms.DoFn;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import constants.SiteType;
+import model.SiteUrlManager;
 
 /**
  * サイトタイプを取得し、フィルタリングを行う。
  * @author kazuki
  *
  */
-public class FilterDoFn extends DoFn<PubsubMessage, PubsubMessage> {
+public class FilterDoFn extends DoFn<SiteUrlManager, SiteUrlManager> {
+
+	private final Logger LOGGER = LoggerFactory.getLogger(FilterDoFn.class);
 
 	@ProcessElement
 	public void Process(ProcessContext c) {
-		Logger LOGGER = Logger.getLogger(FilterDoFn.class.getName());
 
-		LOGGER.info(String.format("Receive Message : %s", new String(c.element().getPayload())));
-		LOGGER.info(String.format("Receive Attribute : %s", c.element().getAttribute("siteType")));
+		LOGGER.info(String.format("Receive Message : %s", c.element().getUrl()));
+		LOGGER.info(String.format("Receive Attribute : %s", c.element().getSiteType()));
 
-		if(SiteType.judgeSiteType(c.element().getAttribute("siteType"))) {
+		if(SiteType.isOld(c.element().getSiteType())) {
 			c.output(c.element());
 		}
 	}
