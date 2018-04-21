@@ -8,9 +8,30 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.google.cloud.dataflow', name: 'google-cloud-dataflow-java-sdk-all', version: '2.2.0'
+   	compile group: 'com.google.cloud.dataflow', name: 'google-cloud-dataflow-java-sdk-all', version: '2.2.0'
+
+	// use twitter4j
+	compile group:'org.twitter4j', name:'twitter4j-core', version:'4.0.4'
+    compile group:'org.twitter4j', name:'twitter4j-async', version:'4.0.4'
+    compile group:'org.twitter4j', name:'twitter4j-media-support', version:'4.0.4'
+    compile group:'org.twitter4j', name:'twitter4j-stream', version:'4.0.4'
+
+	// use slf4j,logback
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+	testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 
     testCompile 'junit:junit:4.12'
+
 }
 
-mainClassName = 'App'
+run{
+	// For set application commandline argsments.
+    // To set argments, run gradle command like below.
+    // gradle run --Pmainargs="--customOption=foobar"
+    if (project.hasProperty('mainargs')) {
+        args(mainargs.split('\\s+'))
+    }
+}
+
+
+mainClassName = 'Main'
