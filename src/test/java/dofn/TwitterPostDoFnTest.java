@@ -14,7 +14,7 @@ import model.SiteUrlManager;
 
 public class TwitterPostDoFnTest {
 
-	private static class MockClient implements Client{
+	private static class MockClient implements Client {
 
 		private String actual;
 
@@ -33,11 +33,11 @@ public class TwitterPostDoFnTest {
 	}
 
 	@Test
-	public void postTest() throws Exception{
+	public void postTest() throws Exception {
 		MockClient client = new MockClient(OLD_SITE_URL);
 
 		DoFnTester<SiteUrlManager, String> tester = DoFnTester.of(new TwitterPostDoFn(client));
-			tester.processBundle(new SiteUrlManager(OLD_SITE_URL, SiteType.OLD.toString()));
+		tester.processBundle(new SiteUrlManager(OLD_SITE_URL, SiteType.OLD.toString()));
 
 	}
 }

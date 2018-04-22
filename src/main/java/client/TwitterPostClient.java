@@ -38,10 +38,10 @@ public class TwitterPostClient implements Client{
 	 * @param oldSiteUrl
 	 */
 	@Override
-	public void post(String oldSiteUrl){
+	public void post(String oldSiteUrl) {
 
-		if(Objects.isNull(this.twitterFactory)) {
-				throw new NullPointerException("TwitterFactoryインスタンスが初期化されていません");
+		if (Objects.isNull(this.twitterFactory)) {
+			throw new NullPointerException("TwitterFactoryインスタンスが初期化されていません");
 		}
 
 		Twitter lgbot = this.twitterFactory.getInstance();

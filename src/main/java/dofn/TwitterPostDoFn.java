@@ -21,8 +21,8 @@ public class TwitterPostDoFn extends DoFn<SiteUrlManager, String> {
 	@ProcessElement
 	public void post(ProcessContext c) {
 
-			String oldSiteUrl = new String(c.element().getUrl());
-			this.client.post(oldSiteUrl);
-			c.output(oldSiteUrl);
+		String oldSiteUrl = new String(c.element().getUrl());
+		this.client.post(oldSiteUrl);
+		c.output(oldSiteUrl);
 	}
 }
